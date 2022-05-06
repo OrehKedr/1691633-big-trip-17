@@ -1,29 +1,34 @@
-import { render, RenderPosition} from '../render.js';
-// import LoadingView from '../view/loading-view.js';
+import { render, RenderPosition } from '../render.js';
 import ListView from '../view/list-view';
-// import ListEmptyView from '../view/list-empty-view.js';
-// import AddNewPointView from '../view/add-new-point-view.js';
-// import AddNewPointWithoutDestinationView from '../view/add-new-point-without-destination-view.js';
-// import AddNewPointWithoutOffersView from '../view/add-new-point-without-offers-view.js';
 import EditPointView from '../view/edit-point-view.js';
 import EventView from '../view/event-view.js';
 
 export default class ListPresenter {
   listComponent = new ListView();
 
-  init(tripEvents) {
+  init(tripEvents, pointsModel, offersModel) {
+    this.offersModel = offersModel;
+    this.pointsModel = pointsModel;
+    this.offers = [...this.offersModel.getOffers()];
+    this.points = [...this.pointsModel.getPoints()];
+
     render(this.listComponent, tripEvents);
 
-    // render(new LoadingView(), this.listComponent.getElement());
-    // render(new ListEmptyView(), this.listComponent.getElement());
-    // render(new AddNewPointView(), this.listComponent.getElement());
-    // render(new AddNewPointWithoutDestinationView(), this.listComponent.getElement());
-    // render(new AddNewPointWithoutOffersView(), this.listComponent.getElement());
+    let offersByType = [];
+    for (let i = 0; i < this.points.length; i++) {
+      offersByType = this.offersModel.getOffersByType(this.points[i].type);
 
-    for (let i = 0; i < 3; i++) {
-      render(new EventView(), this.listComponent.getElement());
+      render(
+        new EventView(this.points[i], offersByType),
+        this.listComponent.getElement()
+      );
     }
 
-    render(new EditPointView(), this.listComponent.getElement(), RenderPosition.AFTERBEGIN);
+    offersByType = this.offersModel.getOffersByType(this.points[1].type);
+    render(
+      new EditPointView(this.points[1], offersByType, this.points),
+      this.listComponent.getElement(),
+      RenderPosition.AFTERBEGIN
+    );
   }
 }
