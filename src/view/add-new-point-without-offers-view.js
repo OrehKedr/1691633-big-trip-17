@@ -1,6 +1,6 @@
 import { createElement } from '../render';
 
-const createAddNewPointWithoutOffersTemplate = () => (
+const createAddNewPointWithoutOffersTemplate = () =>
   `<li class="trip-events__item">
     <form class="event event--edit" action="#" method="post">
       <header class="event__header">
@@ -112,23 +112,24 @@ const createAddNewPointWithoutOffersTemplate = () => (
         </section>
       </section>
     </form>
-  </li>`
-);
+  </li>`;
 
 export default class AddNewPointWithoutOffersView {
-  getTemplate() {
+  #element = null;
+
+  get template() {
     return createAddNewPointWithoutOffersTemplate();
   }
 
   getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
+    if (!this.#element) {
+      this.#element = createElement(this.template);
     }
 
-    return this.element;
+    return this.#element;
   }
 
   removeElement() {
-    this.element = null;
+    this.#element = null;
   }
 }
