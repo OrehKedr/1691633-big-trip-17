@@ -1,15 +1,16 @@
 import { generateOffers } from '../mock/point';
 
 export default class OffersModel {
-  offersCatalog = generateOffers();
+  #offersCatalog = generateOffers();
 
-  getOffers() {
-    return this.offersCatalog;
+  get offers() {
+    return this.#offersCatalog;
   }
 
   getOffersByType(pointType) {
     return (
-      this.offersCatalog.find((offer) => offer.type === pointType)?.offers || []
+      this.#offersCatalog.find((offer) => offer.type === pointType)?.offers ||
+      []
     );
   }
 }

@@ -190,25 +190,30 @@ const createEditPointTemplate = (point, offers, points) => {
 };
 
 export default class EditPointView {
+  #element = null;
+  #point = null;
+  #offers = [];
+  #points = [];
+
   constructor(point, offers, points) {
-    this.point = point;
-    this.offers = offers;
-    this.points = points;
+    this.#point = point;
+    this.#offers = offers;
+    this.#points = points;
   }
 
-  getTemplate() {
-    return createEditPointTemplate(this.point, this.offers, this.points);
+  get template() {
+    return createEditPointTemplate(this.#point, this.#offers, this.#points);
   }
 
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
+  get element() {
+    if (!this.#element) {
+      this.#element = createElement(this.template);
     }
 
-    return this.element;
+    return this.#element;
   }
 
   removeElement() {
-    this.element = null;
+    this.#element = null;
   }
 }

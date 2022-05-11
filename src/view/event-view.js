@@ -76,24 +76,28 @@ const createEventTemplate = (point, offers) => {
 };
 
 export default class EventView {
+  #element = null;
+  #point = null;
+  #offers = [];
+
   constructor(point, offers) {
-    this.point = point;
-    this.offers = offers;
+    this.#point = point;
+    this.#offers = offers;
   }
 
-  getTemplate() {
-    return createEventTemplate(this.point, this.offers);
+  get template() {
+    return createEventTemplate(this.#point, this.#offers);
   }
 
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
+  get element() {
+    if (!this.#element) {
+      this.#element = createElement(this.template);
     }
 
-    return this.element;
+    return this.#element;
   }
 
   removeElement() {
-    this.element = null;
+    this.#element = null;
   }
 }
