@@ -2,37 +2,45 @@ import { render } from '../render.js';
 import ListView from '../view/list-view';
 import EditPointView from '../view/edit-point-view.js';
 import EventView from '../view/event-view.js';
+import SortView from '../view/sort-view';
+import ListEmptyView from '../view/list-empty-view';
 
 export default class ListPresenter {
+  #tripEventsContainer = null;
   #listComponent = new ListView();
-  #editPointComponent = null;
+  #sortComponent = new SortView();
+  #listEmptyViewComponent = new ListEmptyView();
   #offersModel = null;
   #pointsModel = null;
-  #offers = [];
   #points = [];
 
-  init(tripEvents, pointsModel, offersModel) {
+  constructor(tripEvents, pointsModel, offersModel) {
+    this.#tripEventsContainer = tripEvents;
     this.#offersModel = offersModel;
     this.#pointsModel = pointsModel;
-    this.#offers = [...this.#offersModel.offers];
+  }
+
+  init = () => {
     this.#points = [...this.#pointsModel.points];
 
-    render(this.#listComponent, tripEvents);
+    this.#renderBoard();
+  };
 
-    let offersByType = [];
-    for (let i = 0; i < this.#points.length; i++) {
-      offersByType = this.#offersModel.getOffersByType(this.#points[i].type);
+  #renderBoard = () => {
+    if (this.#points.length === 0) {
+      render(this.#listEmptyViewComponent, this.#tripEventsContainer);
+    } else {
+      render(this.#sortComponent, this.#tripEventsContainer);
+      render(this.#listComponent, this.#tripEventsContainer);
 
-      this.#renderPoint(this.#points[i], offersByType, this.#points);
+      let offersByType = [];
+      for (let i = 0; i < this.#points.length; i++) {
+        offersByType = this.#offersModel.getOffersByType(this.#points[i].type);
+
+        this.#renderPoint(this.#points[i], offersByType, this.#points);
+      }
     }
-
-    // offersByType = this.#offersModel.getOffersByType(this.#points[1].type);
-    // this.#editPointComponent = new EditPointView(
-    //   this.#points[1],
-    //   offersByType,
-    //   this.#points
-    // );
-  }
+  };
 
   #renderPoint = (point, offers, points) => {
     const pointComponent = new EventView(point, offers);
