@@ -1,7 +1,7 @@
-import { render } from '../render.js';
+import { render } from '../render';
 import ListView from '../view/list-view';
-import EditPointView from '../view/edit-point-view.js';
-import EventView from '../view/event-view.js';
+import EditPointView from '../view/edit-point-view';
+import EventView from '../view/event-view';
 import SortView from '../view/sort-view';
 import ListEmptyView from '../view/list-empty-view';
 
@@ -23,10 +23,10 @@ export default class ListPresenter {
   init = () => {
     this.#points = [...this.#pointsModel.points];
 
-    this.#renderBoard();
+    this.#renderList();
   };
 
-  #renderBoard = () => {
+  #renderList = () => {
     if (this.#points.length === 0) {
       render(this.#listEmptyViewComponent, this.#tripEventsContainer);
     } else {
@@ -68,28 +68,20 @@ export default class ListPresenter {
       }
     };
 
-    pointComponent.element
-      .querySelector('.event__rollup-btn')
-      .addEventListener('click', () => {
-        replacePointToForm();
-        document.addEventListener('keydown', onEscKeyDown);
-      });
+    pointComponent.setEditClickHandler(() => {
+      replacePointToForm();
+      document.addEventListener('keydown', onEscKeyDown);
+    });
 
-    editPointComponent.element
-      .querySelector('form')
-      .addEventListener('submit', (evt) => {
-        evt.preventDefault();
-        replaceFormToPoint();
-        document.removeEventListener('keydown', onEscKeyDown);
-      });
+    editPointComponent.setFormSubmitHandler(() => {
+      replaceFormToPoint();
+      document.removeEventListener('keydown', onEscKeyDown);
+    });
 
-    editPointComponent.element
-      .querySelector('.event__rollup-btn')
-      .addEventListener('click', (evt) => {
-        evt.preventDefault();
-        replaceFormToPoint();
-        document.removeEventListener('keydown', onEscKeyDown);
-      });
+    editPointComponent.setEditClickHandler(() => {
+      replaceFormToPoint();
+      document.removeEventListener('keydown', onEscKeyDown);
+    });
 
     render(pointComponent, this.#listComponent.element);
   };
