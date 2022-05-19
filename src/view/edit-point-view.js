@@ -1,4 +1,4 @@
-import { createElement } from '../render';
+import AbstractView from '../framework/view/abstract-view';
 import { humanizePointDate } from '../utils';
 
 const createOffersTemplate = (offers, offerIDs) => {
@@ -189,13 +189,13 @@ const createEditPointTemplate = (point, offers, points) => {
     </li>`;
 };
 
-export default class EditPointView {
-  #element = null;
+export default class EditPointView extends AbstractView {
   #point = null;
   #offers = [];
   #points = [];
 
   constructor(point, offers, points) {
+    super();
     this.#point = point;
     this.#offers = offers;
     this.#points = points;
@@ -205,15 +205,27 @@ export default class EditPointView {
     return createEditPointTemplate(this.#point, this.#offers, this.#points);
   }
 
-  get element() {
-    if (!this.#element) {
-      this.#element = createElement(this.template);
-    }
+  setFormSubmitHandler = (callback) => {
+    this._callback.formSubmit = callback;
+    this.element
+      .querySelector('form')
+      .addEventListener('submit', this.#formSubmitHandler);
+  };
 
-    return this.#element;
-  }
+  #formSubmitHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.formSubmit();
+  };
 
-  removeElement() {
-    this.#element = null;
-  }
+  setEditClickHandler = (callback) => {
+    this._callback.editClick = callback;
+    this.element
+      .querySelector('.event__rollup-btn')
+      .addEventListener('click', this.#editClickHandler);
+  };
+
+  #editClickHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.editClick();
+  };
 }

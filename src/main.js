@@ -1,4 +1,4 @@
-import { render } from './render.js';
+import { render } from './framework/render';
 import FilterView from './view/filter-view';
 import ListPresenter from './presenter/list-presenter';
 import PointsModel from './model/points-model';
