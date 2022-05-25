@@ -75,7 +75,7 @@ const createEventTemplate = (point, offers) => {
   </li>`;
 };
 
-export default class EventView extends AbstractView {
+export default class PointView extends AbstractView {
   #point = null;
   #offers = [];
 
@@ -96,7 +96,20 @@ export default class EventView extends AbstractView {
       .addEventListener('click', this.#editClickHandler);
   };
 
-  #editClickHandler = () => {
+  #editClickHandler = (evt) => {
+    evt.preventDefault();
     this._callback.editClick();
+  };
+
+  setFavoriteClickHandler = (callback) => {
+    this._callback.favoriteClick = callback;
+    this.element
+      .querySelector('.event__favorite-btn')
+      .addEventListener('click', this.#favoriteClickHandler);
+  };
+
+  #favoriteClickHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.favoriteClick();
   };
 }
