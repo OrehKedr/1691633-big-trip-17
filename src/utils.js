@@ -58,10 +58,14 @@ const getPointDuration = (dateFrom, dateTo) => {
   return duration;
 };
 
+const getOffersByType = (pointType, offers) =>
+  offers.find((offer) => offer.type === pointType)?.offers || [];
+
 export {
   getRandomInteger,
   humanizePointTime,
   humanizePointDate,
   getPointDuration,
   updateItem,
+  getOffersByType,
 };

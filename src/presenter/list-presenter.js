@@ -34,16 +34,13 @@ export default class ListPresenter {
       render(this.#sortComponent, this.#tripEventsContainer);
       render(this.#listComponent, this.#tripEventsContainer);
 
-      this.#renderPoints(this.#points);
+      this.#renderPoints(this.#points, this.#offersModel.offers);
     }
   };
 
-  #renderPoints = (points) => {
-    let offersByType = [];
+  #renderPoints = (points, offers) => {
     for (let i = 0; i < points.length; i++) {
-      offersByType = this.#offersModel.getOffersByType(points[i].type);
-
-      this.#renderPoint(points[i], offersByType, points);
+      this.#renderPoint(points[i], offers, points);
     }
   };
 

@@ -6,11 +6,4 @@ export default class OffersModel {
   get offers() {
     return this.#offersCatalog;
   }
-
-  getOffersByType(pointType) {
-    return (
-      this.#offersCatalog.find((offer) => offer.type === pointType)?.offers ||
-      []
-    );
-  }
 }

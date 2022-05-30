@@ -1,5 +1,5 @@
 import AbstractView from '../framework/view/abstract-view';
-import { humanizePointTime, getPointDuration } from '../utils';
+import { humanizePointTime, getPointDuration, getOffersByType } from '../utils';
 
 const createOffersTemplate = (offers, offerIDs) => {
   const filteredOffers = offers.filter((offer) =>
@@ -27,6 +27,8 @@ const createEventTemplate = (point, offers) => {
     isFavorite,
     type,
   } = point;
+
+  const offersByType = getOffersByType(type, offers);
   const offerIDs = point.offers;
 
   const eventTitle = `${type} ${destination.name}`;
@@ -38,13 +40,13 @@ const createEventTemplate = (point, offers) => {
     ? 'event__favorite-btn event__favorite-btn--active'
     : 'event__favorite-btn';
 
-  const offersTemplate = createOffersTemplate(offers, offerIDs);
+  const offersTemplate = createOffersTemplate(offersByType, offerIDs);
 
   return `<li class="trip-events__item">
     <div class="event">
       <time class="event__date" datetime="2019-03-18">MAR 18</time>
       <div class="event__type">
-        <img class="event__type-icon" width="42" height="42" src="img/icons/taxi.png" alt="Event type icon">
+        <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon">
       </div>
       <h3 class="event__title">${eventTitle}</h3>
       <div class="event__schedule">
