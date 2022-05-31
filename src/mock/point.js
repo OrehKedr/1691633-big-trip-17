@@ -2,19 +2,19 @@ import dayjs from 'dayjs';
 import { getRandomInteger } from '../utils';
 import { nanoid } from 'nanoid';
 
-const generatePointType = () => {
-  const POINT_TYPE = [
-    'taxi',
-    // 'bus',
-    // 'train',
-    // 'ship',
-    // 'drive',
-    'flight',
-    // 'check-in',
-    'sightseeing',
-    // 'restaurant',
-  ];
+const POINT_TYPE = [
+  'taxi',
+  'bus',
+  'train',
+  'ship',
+  'drive',
+  'flight',
+  'check-in',
+  'sightseeing',
+  'restaurant',
+];
 
+const generatePointType = () => {
   const randomIndex = getRandomInteger(0, POINT_TYPE.length - 1);
 
   return POINT_TYPE[randomIndex];
@@ -167,4 +167,4 @@ const generatePoint = () => {
   };
 };
 
-export { generatePoint, generateOffers };
+export { generatePoint, generateOffers, POINT_TYPE };
