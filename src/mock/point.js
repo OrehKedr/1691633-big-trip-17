@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import { getRandomInteger } from '../utils';
+import { getRandomInteger } from '../utils/common';
 import { nanoid } from 'nanoid';
 
 const POINT_TYPE = [

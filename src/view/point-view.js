@@ -1,5 +1,6 @@
 import AbstractView from '../framework/view/abstract-view';
-import { humanizePointTime, getPointDuration, getOffersByType } from '../utils';
+import { humanizePointTime, getPointDuration } from '../utils/point';
+import { getOffersByType } from '../utils/common';
 
 const createOffersTemplate = (offers, offerIDs) => {
   const filteredOffers = offers.filter((offer) =>
