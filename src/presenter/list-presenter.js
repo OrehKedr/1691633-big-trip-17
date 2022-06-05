@@ -1,5 +1,7 @@
 import { render } from '../framework/render';
-import { updateItem } from '../utils';
+import { sortPointsByPrice, sortPointsByTime } from '../utils/point';
+import { updateItem } from '../utils/common';
+import { SortType } from '../const';
 import ListView from '../view/list-view';
 import SortView from '../view/sort-view';
 import ListEmptyView from '../view/list-empty-view';
@@ -13,6 +15,8 @@ export default class ListPresenter {
   #offersModel = null;
   #pointsModel = null;
   #points = [];
+  #sourcePoints = [];
+  #currentSortType = SortType.DEFAULT;
   #pointPresenter = new Map();
 
   constructor(tripEvents, pointsModel, offersModel) {
@@ -23,15 +27,16 @@ export default class ListPresenter {
 
   init = () => {
     this.#points = [...this.#pointsModel.points];
+    this.#sourcePoints = [...this.#pointsModel.points];
 
-    this.#renderList();
+    this.#renderPointList();
   };
 
-  #renderList = () => {
+  #renderPointList = () => {
     if (this.#points.length === 0) {
       render(this.#listEmptyViewComponent, this.#tripEventsContainer);
     } else {
-      render(this.#sortComponent, this.#tripEventsContainer);
+      this.#renderSort();
       render(this.#listComponent, this.#tripEventsContainer);
 
       this.#renderPoints(this.#points, this.#offersModel.offers);
@@ -68,5 +73,35 @@ export default class ListPresenter {
 
   #handleModeChange = () => {
     this.#pointPresenter.forEach((presenter) => presenter.resetView());
+  };
+
+  #sortPoints = (sortType) => {
+    switch (sortType) {
+      case SortType.PRICE:
+        this.#points.sort(sortPointsByPrice);
+        break;
+      case SortType.TIME:
+        this.#points.sort(sortPointsByTime);
+        break;
+      default:
+        this.#points = [...this.#sourcePoints];
+    }
+
+    this.#currentSortType = sortType;
+  };
+
+  #handleSortTypeChange = (sortType) => {
+    if (this.#currentSortType === sortType) {
+      return;
+    }
+
+    this.#sortPoints(sortType);
+    this.#clearPointList();
+    this.#renderPointList();
+  };
+
+  #renderSort = () => {
+    render(this.#sortComponent, this.#tripEventsContainer);
+    this.#sortComponent.setSortTypeChangeHandler(this.#handleSortTypeChange);
   };
 }

@@ -1,24 +1,5 @@
 import dayjs from 'dayjs';
 
-// Функция из интернета по генерации случайного числа из диапазона
-// Источник - https://github.com/you-dont-need/You-Dont-Need-Lodash-Underscore#_random
-const getRandomInteger = (a = 0, b = 1) => {
-  const lower = Math.ceil(Math.min(a, b));
-  const upper = Math.floor(Math.max(a, b));
-
-  return Math.floor(lower + Math.random() * (upper - lower + 1));
-};
-
-const updateItem = (items, update) => {
-  const index = items.findIndex((item) => item.id === update.id);
-
-  if (index === -1) {
-    return items;
-  }
-
-  return [...items.slice(0, index), update, ...items.slice(index + 1)];
-};
-
 const humanizePointTime = (date) => dayjs(date).format('HH:mm');
 const humanizePointDate = (date) => dayjs(date).format('DD/MM/YY HH:mm');
 
@@ -58,14 +39,36 @@ const getPointDuration = (dateFrom, dateTo) => {
   return duration;
 };
 
-const getOffersByType = (pointType, offers) =>
-  offers.find((offer) => offer.type === pointType)?.offers || [];
+const sortPointsByPrice = (pointA, pointB) => {
+  if (pointA.basePrice < pointB.basePrice) {
+    return 1;
+  }
+
+  if (pointA.basePrice > pointB.basePrice) {
+    return -1;
+  }
+
+  if (pointA.basePrice === pointB.basePrice) {
+    return 0;
+  }
+};
+
+const sortPointsByTime = (pointA, pointB) => {
+  const dayJSFromA = dayjs(pointA.dateFrom);
+  const dayJSToA = dayjs(pointA.dateTo);
+  const durationA = dayJSToA.diff(dayJSFromA);
+
+  const dayJSFromB = dayjs(pointB.dateFrom);
+  const dayJSToB = dayjs(pointB.dateTo);
+  const durationB = dayJSToB.diff(dayJSFromB);
+
+  return durationB - durationA;
+};
 
 export {
-  getRandomInteger,
   humanizePointTime,
   humanizePointDate,
   getPointDuration,
-  updateItem,
-  getOffersByType,
+  sortPointsByPrice,
+  sortPointsByTime,
 };

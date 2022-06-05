@@ -1,9 +1,10 @@
 import AbstractStatefulView from '../framework/view/abstract-stateful-view';
-import { humanizePointDate, getOffersByType } from '../utils';
+import { humanizePointDate } from '../utils/point';
+import { getOffersByType } from '../utils/common';
 import { POINT_TYPE } from '../mock/point';
+import dayjs from 'dayjs';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
-import dayjs from 'dayjs';
 
 const createOffersTemplate = (offers, offerIDs) => {
   const offersListTemplate = offers
@@ -333,7 +334,7 @@ export default class EditPointView extends AbstractStatefulView {
       {
         enableTime: true,
         minuteIncrement: 1,
-        dateFormat: 'd/m/Y H:i',
+        dateFormat: 'd/m/y H:i',
         defaultDate: dayjs(this._state.dateFrom).toISOString(),
         onClose: this.#dateFromChangeHandler, // На событие flatpickr передаём наш колбэк
       }
@@ -344,7 +345,7 @@ export default class EditPointView extends AbstractStatefulView {
       {
         enableTime: true,
         minuteIncrement: 1,
-        dateFormat: 'd/m/Y H:i',
+        dateFormat: 'd/m/y H:i',
         defaultDate: dayjs(this._state.dateTo).toISOString(),
         onClose: this.#dateToChangeHandler,
       }
