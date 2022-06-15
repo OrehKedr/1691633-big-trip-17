@@ -1,6 +1,8 @@
 import { render, replace, remove } from '../framework/render';
 import PointView from '../view/point-view';
 import EditPointView from '../view/edit-point-view';
+import { UserAction, UpdateType } from '../const';
+import { isDatesEqual } from '../utils/point';
 
 const mode = {
   DEFAULT: 'DEFAULT',
@@ -51,6 +53,7 @@ export default class PointPresenter {
     this.#pointComponent.setFavoriteClickHandler(this.#handleFavoriteClick);
     this.#editPointComponent.setFormSubmitHandler(this.#handleFormSubmit);
     this.#editPointComponent.setEditClickHandler(this.#replaceFormToPoint);
+    this.#editPointComponent.setDeleteClickHandler(this.#handleDeleteClick);
 
     if (prevPointComponent === null || prevEditPointComponent === null) {
       render(this.#pointComponent, this.#pointListContainer);
@@ -92,15 +95,33 @@ export default class PointPresenter {
 
   #handleFavoriteClick = () => {
     this.#changeData(
+      UserAction.UPDATE_POINT,
+      UpdateType.MINOR,
       { ...this.#point, isFavorite: !this.#point.isFavorite },
-      this.#offers,
-      this.#points
     );
   };
 
-  #handleFormSubmit = (point) => {
-    this.#changeData(point, this.#offers, this.#points);
+  #handleFormSubmit = (update) => {
+    // Проверяем, поменялись ли в точке маршрута данные, которые попадают под фильтрацию,
+    // а значит требуют перерисовки списка - если таких нет, это PATCH-обновление
+    const isMinorUpdate =
+      !isDatesEqual(this.#point.dateFrom, update.dateFrom) ||
+      !isDatesEqual(this.#point.dateTo, update.dateTo);
+
+    this.#changeData(
+      UserAction.UPDATE_POINT,
+      isMinorUpdate ? UpdateType.MINOR : UpdateType.PATCH,
+      update,
+    );
     this.#replaceFormToPoint();
+  };
+
+  #handleDeleteClick = (point) => {
+    this.#changeData(
+      UserAction.DELETE_POINT,
+      UpdateType.MINOR,
+      point,
+    );
   };
 
   destroy = () => {
