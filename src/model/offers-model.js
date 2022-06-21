@@ -1,9 +1,20 @@
-import { generateOffers } from '../mock/point';
-
 export default class OffersModel {
-  #offersCatalog = generateOffers();
+  #pointsApiService = null;
+  #offers = [];
+
+  constructor(pointsApiService) {
+    this.#pointsApiService = pointsApiService;
+  }
 
   get offers() {
-    return this.#offersCatalog;
+    return this.#offers;
   }
+
+  init = async () => {
+    try {
+      this.#offers = await this.#pointsApiService.offers;
+    } catch(err) {
+      this.#offers = [];
+    }
+  };
 }
