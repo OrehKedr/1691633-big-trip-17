@@ -55,6 +55,14 @@ const sortPointsByTime = (pointA, pointB) => {
   return durationB - durationA;
 };
 
+const sortPointsByDate = (pointA, pointB) => {
+  const dayJSFromA = dayjs(pointA.dateFrom);
+  const dayJSFromB = dayjs(pointB.dateFrom);
+  const diff = dayJSFromA.diff(dayJSFromB);
+
+  return diff;
+};
+
 const isDatesEqual = (dateA, dateB) =>
   (dateA === null && dateB === null) || dayjs(dateA).isSame(dateB, 'D');
 
@@ -70,6 +78,7 @@ export {
   getPointDuration,
   sortPointsByPrice,
   sortPointsByTime,
+  sortPointsByDate,
   isDatesEqual,
   isPointFuture,
   isPointPast,

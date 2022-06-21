@@ -1,10 +1,21 @@
 import AbstractStatefulView from '../framework/view/abstract-stateful-view';
 import { humanizePointDate } from '../utils/point';
 import { getOffersByType } from '../utils/common';
-import { POINT_TYPE } from '../mock/point';
 import dayjs from 'dayjs';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
+
+const POINT_TYPE = [
+  'taxi',
+  'bus',
+  'train',
+  'ship',
+  'drive',
+  'flight',
+  'check-in',
+  'sightseeing',
+  'restaurant',
+];
 
 const BLANK_POINT = {
   id: 'HRaQyvYwVDfOcXfxMswM_',
@@ -79,22 +90,16 @@ const createDestinationTemplate = (point) => {
     </section>`;
 };
 
-const createDestinationDropdownListTemplate = (points) => {
-  const uniquePointDestinationNames = new Set(
-    points.map(({ destination: { name } }) => name)
-  );
-
-  let template = '';
-  for (const name of uniquePointDestinationNames) {
-    template += `<option value="${name}"></option>`;
-  }
+const createDestinationDropdownListTemplate = (destinations) => {
+  const template = destinations
+    .map(({ name }) => `<option value="${name}"></option>`)
+    .join('');
 
   return template;
 };
 
 const createEventTypeListTemplate = (type) => {
-  let template = '';
-  template = POINT_TYPE.map(
+  const template = POINT_TYPE.map(
     (pointType) => `
     <div class="event__type-item">
       <input id="event-type-${pointType}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${pointType}" ${type === pointType ? 'checked' : ''}>
@@ -111,7 +116,7 @@ const createEventTypeListTemplate = (type) => {
 </div>`;
 };
 
-const createEditPointTemplate = (state, offers, points, isNewPoint) => {
+const createEditPointTemplate = (state, offers, destinations, isNewPoint) => {
   const { basePrice, type, destination, hasDestination } = state;
   const offerIDs = state.offers;
   const dateFrom = humanizePointDate(state.dateFrom);
@@ -128,7 +133,7 @@ const createEditPointTemplate = (state, offers, points, isNewPoint) => {
     : '';
 
   const destinationDropdownListTemplate =
-    createDestinationDropdownListTemplate(points);
+    createDestinationDropdownListTemplate(destinations);
 
   const eventTypeList = createEventTypeListTemplate(type);
 
@@ -194,12 +199,12 @@ const createEditPointTemplate = (state, offers, points, isNewPoint) => {
 
 export default class EditPointView extends AbstractStatefulView {
   #offers = [];
-  #points = [];
+  #destinations = [];
   #datepickerStartTime = null;
   #datepickerEndTime = null;
   #isNewPoint = false;
 
-  constructor(point, offers, points) {
+  constructor(point, offers, destinations) {
     super();
 
     if (!point) {
@@ -211,7 +216,7 @@ export default class EditPointView extends AbstractStatefulView {
 
     //Справочники. Данные моделей Опции, Точки маршрута.
     this.#offers = offers;
-    this.#points = points;
+    this.#destinations = destinations;
 
     this.#setInnerHandlers();
     this.#setDatepickers();
@@ -221,7 +226,7 @@ export default class EditPointView extends AbstractStatefulView {
     return createEditPointTemplate(
       this._state,
       this.#offers,
-      this.#points,
+      this.#destinations,
       this.#isNewPoint
     );
   }
@@ -341,9 +346,9 @@ export default class EditPointView extends AbstractStatefulView {
     const isValidValue = options.some((option) => option.value === value );
     const name = isValidValue ? value : options[0].value;
 
-    const destination = this.#points.find(
-      (point) => point.destination.name === name
-    ).destination;
+    const destination = this.#destinations.find(
+      (dest) => dest.name === name
+    );
 
     this.updateElement({
       destination,
@@ -365,7 +370,7 @@ export default class EditPointView extends AbstractStatefulView {
   };
 
   #dateFromChangeHandler = ([userDate]) => {
-    const dateFrom = dayjs(userDate);
+    const dateFrom = userDate;
     this.updateElement({
       dateFrom,
       dateTo: dateFrom,
@@ -373,7 +378,7 @@ export default class EditPointView extends AbstractStatefulView {
   };
 
   #dateToChangeHandler = ([userDate]) => {
-    const dateTo = dayjs(userDate);
+    const dateTo = userDate;
     this.updateElement({
       dateTo,
     });

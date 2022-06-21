@@ -8,7 +8,7 @@ export default class PointNewPresenter {
   #editPointComponent = null;
 
   #offers = null;
-  #points = null;
+  #destinations = null;
 
   #changeData = null;
   #destroyCallback = null;
@@ -18,9 +18,9 @@ export default class PointNewPresenter {
     this.#changeData = changeData;
   }
 
-  init = (callback, offers, points) => {
+  init = (callback, offers, destinations) => {
     this.#offers = offers;
-    this.#points = points;
+    this.#destinations = destinations;
     this.#destroyCallback = callback;
 
     if (this.#editPointComponent !== null) {
@@ -30,7 +30,7 @@ export default class PointNewPresenter {
     this.#editPointComponent = new EditPointView(
       null,
       this.#offers,
-      this.#points
+      this.#destinations
     );
 
     this.#editPointComponent.setFormSubmitHandler(this.#handleFormSubmit);

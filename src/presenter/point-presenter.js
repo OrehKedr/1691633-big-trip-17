@@ -20,7 +20,7 @@ export default class PointPresenter {
   //Данные моделей.
   #point = null;
   #offers = null;
-  #points = null;
+  #destinations = null;
 
   //Callbacks.
   #changeData = null;
@@ -34,10 +34,10 @@ export default class PointPresenter {
     this.#changeMode = changeMode;
   }
 
-  init = (point, offers, points) => {
+  init = (point, offers, destinations) => {
     this.#point = point;
     this.#offers = offers;
-    this.#points = points;
+    this.#destinations = destinations;
 
     const prevPointComponent = this.#pointComponent;
     const prevEditPointComponent = this.#editPointComponent;
@@ -46,7 +46,7 @@ export default class PointPresenter {
     this.#editPointComponent = new EditPointView(
       this.#point,
       this.#offers,
-      this.#points
+      this.#destinations
     );
 
     this.#pointComponent.setEditClickHandler(this.#replacePointToForm);
