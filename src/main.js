@@ -8,7 +8,7 @@ import DestinationsModel from './model/destinations-model';
 import FilterModel from './model/filter-model';
 import PointsApiService from './points-api-service';
 
-const AUTHORIZATION = 'Basic hS2sfS14kct1sa5j';
+const AUTHORIZATION = 'Basic hS2sfS14kct1sfjao';
 const END_POINT = 'https://17.ecmascript.pages.academy/big-trip';
 const pointsApiService = new PointsApiService(END_POINT, AUTHORIZATION);
 
@@ -45,9 +45,12 @@ const handleNewPointFormClick = () => {
 
 filterPresenter.init();
 listPresenter.init();
-offersModel.init();
-destinationsModel.init();
-pointsModel.init().finally(() => {
-  render(newPointButtonComponent, tripMain);
-  newPointButtonComponent.setClickHandler(handleNewPointFormClick);
-});
+const step1 = offersModel.init();
+const step2 = destinationsModel.init();
+Promise.all([step1, step2])
+  .then(() => pointsModel.init())
+  .finally(() => {
+    render(newPointButtonComponent, tripMain);
+    newPointButtonComponent.setClickHandler(handleNewPointFormClick);
+  });
+
